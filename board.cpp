@@ -56,7 +56,7 @@ void Board::print() {
         }
         cout << "|" << endl;
     }
-    cout << edge << endl;
+    cout << edge << edge << endl;
 }
 
 void Board::printFlags() {
