@@ -117,6 +117,7 @@ Point select(Board &board){
 				riskyChoices--;
 			}
 			if(choice==riskyChoices){
+                cout<<"Kidding you, I'm just guessing around"<<endl;
 				return Point{i,j};
 			}
 		}
@@ -128,16 +129,21 @@ int main() {
 	game.printBomb();
 	game.print();
 	while (!game.isEOG()) {
-		//int x, y;
-		//cin>>x>>y;
 		Point now = select(game);
 		cout<<now.x<<" "<<now.y<<endl;
 		game.pick(now.x, now.y);
 		game.print();
-		//game.printbomb();
 		cout <<"state is : "<< game.winOrLoss() << endl;
-
 	}
 	game.printBomb();
+    game.printFlags();
+    NebSet finalNeb = game.getNeb();
+    int finalSize = finalNeb.size();
+    for(int i=0;i<finalSize;i++){
+        Neb nebNow = finalNeb[i];
+        int fringeSize = nebNow.fringe.size();
+        cout<<fringeSize<<endl;
+    }
+
 	return 0;
 }

@@ -59,6 +59,24 @@ void Board::print() {
     cout << edge << endl;
 }
 
+void Board::printFlags() {
+    string edge(2*N + 3, '=');
+    cout << " |";
+    for (int j = 0; j < M; j++) cout << j << " ";
+    cout << endl;
+    cout << edge << endl;
+    for (int i = 0; i<N; i++) {
+        cout << i;
+        cout << "|";
+        for (int j = 0; j<M; j++) {
+            cout<<flags[i][j]<<" ";
+        }
+        cout << "|" << endl;
+    }
+    cout << edge << endl;
+}
+
+
 void Board::printBomb() {
     string edge(2*N + 3, '=');
     cout << " |";

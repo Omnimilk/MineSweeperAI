@@ -37,6 +37,7 @@ public:
 	Board(int a, int b,int c);//a*b matrix with c bombs
 	void print();//print the board
 	void printBomb();//print the arrange of mines
+	void printFlags();
 	bool isEOG();//end of game
 	void pick(int x, int y);//try to select the2
 	int winOrLoss();//1=win -1=loss 0=in game
