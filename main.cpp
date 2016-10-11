@@ -17,7 +17,7 @@ Point select(Board &board){
 	}
 
 	//non-decisive: Sim
-	//if there are safe cells, then choose them
+	//return safe cell as long as there is one
 	for(int i=0;i<board.N;i++){
 		for(int j=0;j<board.M;j++){
 			if(board.flags[i][j]==1){
@@ -30,25 +30,27 @@ Point select(Board &board){
 	int numOfNebs = nebSetNow.size();
 	for(int i=0;i<numOfNebs;i++){
 		Neb nebNow = nebSetNow[i];
-		int boudarySize = nebNow.boundary.size();
+		int boundarySize = nebNow.boundary.size();
 		int fringeSize = nebNow.fringe.size();
-		for(int j = 0;j<boudarySize;j++){
+
+		//for every boundary cell
+		for(int j = 0;j<boundarySize;j++){
+			Point cellNow = nebNow.boundary[j];
 			int fringeCount = 0;
+			//count its fringe cells
 			for(int k = 0;k<fringeSize;k++){
-				if((nebNow.fringe[k].x - nebNow.boundary[j].x)==1 ||(nebNow.fringe[k].x - nebNow.boundary[j].x)==-1
-				   ||(nebNow.fringe[k].y - nebNow.boundary[j].y)||(nebNow.fringe[k].y - nebNow.boundary[j].y)){
-					//if fringe cell the neighbor of this boundary cell
+				if((nebNow.fringe[k].x - cellNow.x)==1 ||(nebNow.fringe[k].x - cellNow.x)==-1
+				   ||(nebNow.fringe[k].y - cellNow.y)==1||(nebNow.fringe[k].y - cellNow.y)==-1){
 					fringeCount++;
 				}
 			}
 
-			//rule 1
-			if(board.board[nebNow.boundary[j].x][nebNow.boundary[j].y] == fringeCount){
-				//if num of adjacent fringes equils to num of mines, then they are all mines, flag them!
+			//rule 1: If num of adjacent fringes equals to num of mines, then they are all mines, flag them!
+			if(board.board[cellNow.x][cellNow.y] == fringeCount){
 				for (int i = -1; i < 2; i++) {
 					for (int j = -1; j < 2; j++) {
 						if (i == 0 && j == 0) continue;
-						Point np{nebNow.boundary[j].x+i,nebNow.boundary[j].y+j};
+						Point np{cellNow.x+i,cellNow.y+j};
 						if (np.x < 0 || np.x >= board.N || np.y < 0 || np.y >= board.M) continue;
 						if (board.board[np.x][np.y] == -1) {
 							//mark in the flag matrix
@@ -68,7 +70,7 @@ Point select(Board &board){
 			for (int i = -1; i < 2; i++) {
 				for (int j = -1; j < 2; j++) {
 					if (i == 0 && j == 0) continue;
-					Point np{nebNow.boundary[j].x+i,nebNow.boundary[j].y+j};
+					Point np{cellNow.x+i,cellNow.y+j};
 					if (np.x < 0 || np.x >= board.N || np.y < 0 || np.y >= board.M) continue;
 					if (board.flags[np.x][np.y] == -1)minesAround++;
 				}
@@ -78,9 +80,9 @@ Point select(Board &board){
 				for (int i = -1; i < 2; i++) {
 					for (int j = -1; j < 2; j++) {
 						if (i == 0 && j == 0) continue;
-						Point np{nebNow.boundary[j].x+i,nebNow.boundary[j].y+j};
+						Point np{cellNow.x+i,cellNow.y+j};
 						if (np.x < 0 || np.x >= board.N || np.y < 0 || np.y >= board.M) continue;
-						if (board.flags[np.x][np.y] == 0)            board.flags[np.x][np.y] = 1;
+						if (board.flags[np.x][np.y] == 0)board.flags[np.x][np.y] = 1;//mark unknown neb(0) as safe(1)
 					}
 				}
 			}
