@@ -76,7 +76,6 @@ void Board::printFlags() {
     cout << edge << endl;
 }
 
-
 void Board::printBomb() {
     string edge(2*N + 3, '=');
     cout << " |";
@@ -115,35 +114,29 @@ void Board::pick(int x, int y) {
         board[x][y] = -2;
         return;
     }
-    Neb newNeb;
+
     Point p{x,y};
-    addNeb(p,newNeb);
+    //if in one fringe then update that neb
+    for(int i=0;i<neb.size();i++){
+        Neb nebnow = neb[i];
+        for(int j=0;j<nebnow.fringe.size();j++){
+            if(x==nebnow.fringe[j].x && y==nebnow.fringe[j].y){
+                //update boundary and pringe:never erase boundary(boundary is always boudary)
+                nebnow.fringe.erase(nebnow.fringe.begin()+j);
+                nebOf(p,nebnow);
+                return;
+            }
+        }
+    }
+
+    //if not in any fringe; then add a new neb
+    Neb newNeb;
+    nebOf(p,newNeb);
     neb.push_back(newNeb);
+    return;
 }
 
-//void Board::addNeb(Point p, Neb &f) {
-//    if (bombs[p.x][p.y] != 0) return;
-//
-//    if (bombsNerby(p) == 0) {
-//        f.interior.push_back(p);
-//        board[p.x][p.y] = 0;
-//        for (int i = -1; i < 2; i++) {
-//            for (int j = -1; j < 2; j++) {
-//                if (i == 0 && j == 0) continue;
-//                Point np{p.x+i,p.y+j};
-//                if (np.x < 0 || np.x >= N || np.y < 0 || np.y >= M) continue;
-//                if (board[np.x][np.y] != -1) continue;
-//                addNeb(np,f);//recursively search its neighborhood
-//            }
-//        }
-//    }
-//    else {
-//        f.boundary.push_back(p);
-//        board[p.x][p.y] = bombsNerby(p);
-//    }
-//}
-
-void Board::addNeb(Point p, Neb &f) {
+void Board::nebOf(Point p, Neb &f) {
     if (bombs[p.x][p.y] != 0) return;//is boom
 
     if (bombsNerby(p) == 0) {
@@ -154,11 +147,8 @@ void Board::addNeb(Point p, Neb &f) {
                 if (i == 0 && j == 0) continue;
                 Point np{p.x+i,p.y+j};
                 if (np.x < 0 || np.x >= N || np.y < 0 || np.y >= M) continue;
-                if (board[np.x][np.y] != -1){
-                    f.fringe.push_back(np);
-                    continue;
-                };
-                addNeb(np,f);//recursively search its neighborhood
+                if (board[np.x][np.y] != -1)continue;
+                nebOf(np,f);//recursively search its neighborhood
             }
         }
     }
@@ -166,6 +156,27 @@ void Board::addNeb(Point p, Neb &f) {
         flags[p.x][p.y] =2;//boundary cells have been checked
         f.boundary.push_back(p);
         board[p.x][p.y] = bombsNerby(p);
+        //add adjacent unknown cells to fringe
+        for (int i = -1; i < 2; i++) {
+            for (int j = -1; j < 2; j++) {
+                if (i == 0 && j == 0) continue;
+                Point np{p.x+i,p.y+j};
+                if (np.x < 0 || np.x >= N || np.y < 0 || np.y >= M) continue;
+                if (board[np.x][np.y] != -1)continue;
+
+               //unknown cells near this boundary cell, see if it is already in fringe of this neb
+                bool isAlreadyFringe = false;
+                for(int k=0;k<f.fringe.size();k++){
+                    if(np.x==f.fringe[k].x && np.y==f.fringe[k].y){
+                        isAlreadyFringe = true;
+                        break;
+                    }
+                }
+                if(!isAlreadyFringe){
+                    f.fringe.push_back(np);
+                }
+            }
+        }
     }
 }
 

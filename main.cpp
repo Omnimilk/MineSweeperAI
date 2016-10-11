@@ -11,11 +11,18 @@ Point select(Board &board){
 	int row,col;
 	//first move:random, corner, center
     //cornor gives the best performance
-	if(!board.init){
-		row = (board.N-1)/2;
-		col = (board.M-1)/2;
-		return Point{row,col};
-	}
+    if(!board.init){
+        row = board.N-1;
+        col = board.M-1;
+        return Point{row,col};
+    }
+
+    //center
+//	if(!board.init){
+//		row = (board.N-1)/2;
+//		col = (board.M-1)/2;
+//		return Point{row,col};
+//	}
 
 	//non-decisive: Sim
 	//return safe cell as long as there is one
@@ -32,7 +39,7 @@ Point select(Board &board){
 	for(int i=0;i<numOfNebs;i++){
 		Neb nebNow = nebSetNow[i];
 		int boundarySize = nebNow.boundary.size();
-		int fringeSize = nebNow.fringe.size();
+		//int fringeSize = nebNow.fringe.size();
 
 		//for every boundary cell
 		for(int j = 0;j<boundarySize;j++){
@@ -112,6 +119,16 @@ Point select(Board &board){
 	}
 
 
+    //if sim can not give an answer, then use Enu
+    //Enu: enumerate all solutions inthe fringe, interpret if execute over 1 sec
+//    for(int i=0;i<numOfNebs;i++){
+//        Neb nebNow = nebSetNow[i];
+//        int fringeSize = nebNow.fringe.size();
+//        vector<int> configurations;
+//        for()
+//    }
+
+
 	//tie-breaking blocks, when there is no safe cell
 	//ran; Lo; Aw; Awf; Cl;Clf
 	//ran: picks a cell randomly
@@ -159,39 +176,38 @@ int main() {
     cout<<"========================================================================"<<endl;
 	return 0;
 }
-/**
-int main() {
 
-	//game.printBomb();
-	//game.print();
-    int numOfTest=10000;
-    int winningCase = 0;
-    while(numOfTest>0) {
-        Board game(8, 8, 10);
-        while (!game.isEOG()) {
-            Point now = select(game);
-            //cout << now.x << " " << now.y << endl;
-            game.pick(now.x, now.y);
-            //game.print();
-            //cout << "state is : " << game.winOrLoss() << endl;
-            int winornot = game.winOrLoss();
-            if(winornot==1) winningCase++;
-        }
-
-        numOfTest--;
-    }
-
-    cout<<"Wining "<<winningCase<<" games."<<endl;
-//	game.printBomb();
-//    game.printFlags();
-//    NebSet finalNeb = game.getNeb();
-//    int finalSize = finalNeb.size();
-//    for(int i=0;i<finalSize;i++){
-//        Neb nebNow = finalNeb[i];
-//        int fringeSize = nebNow.fringe.size();
-//        cout<<fringeSize<<endl;
+//int main() {
+//
+//    //game.printBomb();
+//    //game.print();
+//    int numOfTest = 10000;
+//    int winningCase = 0;
+//    while (numOfTest > 0) {
+//        Board game(8, 8, 10);
+//        while (!game.isEOG()) {
+//            Point now = select(game);
+//            //cout << now.x << " " << now.y << endl;
+//            game.pick(now.x, now.y);
+//            //game.print();
+//            //cout << "state is : " << game.winOrLoss() << endl;
+//            int winornot = game.winOrLoss();
+//            if (winornot == 1) winningCase++;
+//        }
+//
+//        numOfTest--;
 //    }
-
-	return 0;
-
- **/
+//
+//    cout << "Wining " << winningCase << " games." << endl;
+////	game.printBomb();
+////    game.printFlags();
+////    NebSet finalNeb = game.getNeb();
+////    int finalSize = finalNeb.size();
+////    for(int i=0;i<finalSize;i++){
+////        Neb nebNow = finalNeb[i];
+////        int fringeSize = nebNow.fringe.size();
+////        cout<<fringeSize<<endl;
+////    }
+//
+//    return 0;
+//}

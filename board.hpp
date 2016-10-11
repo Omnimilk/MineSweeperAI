@@ -23,12 +23,19 @@ struct Neb {
 
 typedef vector<Neb> NebSet;
 
+bool isAdjacent(Point p1, Point p2) {
+	if((p1.x - p2.x)==1 ||(p1.x - p2.x)==-1 ||(p1.y - p2.y)==1||(p1.y - p2.y)==-1){
+		return 1;
+	}
+	return 0;
+}
+
 class Board {
 private:
 	Matrix bombs;
 	bool booom;
 	NebSet neb;
-	void addNeb(Point p , Neb &f);
+	void nebOf(Point p , Neb &f);
 	void initialBombs(int x, int y);
 	int bombsNerby(Point &p);
 
