@@ -11,7 +11,8 @@
 using namespace std;
 
 typedef std::vector<std::vector<int> > Matrix;
-typedef std::vector<std::vector<double > > DoubleMatrix;
+
+//typedef std::vector<std::vector<double > > DoubleMatrix;
 
 struct Point {
 	int x;
@@ -52,7 +53,7 @@ public:
 	int winOrLoss();//1=win -1=loss 0=in game
 	NebSet getNeb();//get the neighbour sets
 	Matrix getBoard();//get the board
-	DoubleMatrix flags;//default is 0, -1 for mine, 1 for unpicked safe, 2 for picked safe
+	Matrix flags;//default is 0, -1 for mine, 1 for unpicked safe, 2 for picked safe
 	Matrix board;
 	int minesFound;
 	bool init;
