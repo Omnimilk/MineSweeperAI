@@ -20,6 +20,7 @@ struct Point {
 };
 
 struct Neb {
+    vector<Point> interior;
 	vector<Point> fringe;
 	vector<Point> boundary;
 };
@@ -37,10 +38,9 @@ class Board {
 private:
 	Matrix bombs;
 	bool booom;
-	NebSet neb;
 	void nebOf(Point p , Neb &f);
 	void initialBombs(int x, int y);
-	int bombsNerby(Point &p);
+	int bombsNearby(Point &p);
 
 public:
 	Board();
@@ -54,9 +54,10 @@ public:
 	NebSet getNeb();//get the neighbour sets
 	Matrix getBoard();//get the board
 	Matrix flags;//default is 0, -1 for mine, 1 for unpicked safe, 2 for picked safe
-	Matrix board;
+	Matrix board;//-1 for unknown; non-neg for safe
 	int minesFound;
 	bool init;
+    NebSet neb;
 	int N;
 	int M;
 	int K;

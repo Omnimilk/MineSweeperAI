@@ -107,9 +107,10 @@ bool Board::isEOG() {
 }
 
 void Board::pick(int x, int y) {
-    if (!init) initialBombs(x,y);
+    if (!init) initialBombs(x,y);//initialize after first pick
 
     if (board[x][y] != -1) return;//this place has already been checked
+
     if (bombs[x][y] == 1) {
         booom = 1;
         board[x][y] = -2;
@@ -117,22 +118,50 @@ void Board::pick(int x, int y) {
     }
 
     Point p{x,y};
-    //if in one fringe then update that neb
+    //if in one fringe ang it has no mines near it then update that neb
     for(int i=0;i<neb.size();i++){
         Neb nebnow = neb[i];
         for(int j=0;j<nebnow.fringe.size();j++){
-            if(x==nebnow.fringe[j].x && y==nebnow.fringe[j].y){
-                //update boundary and pringe:never erase boundary(boundary is always boudary)
-                nebnow.fringe.erase(nebnow.fringe.begin()+j);
-                nebOf(p,nebnow);
+            if(x==nebnow.fringe[j].x && y==nebnow.fringe[j].y && bombsNearby(nebnow.fringe[i])==0){
+                //update boundary and fringe:never erase boundary(boundary is always boundary)
+               //cout<<"updating to "<<i+1<<" neb"<<endl;
+               // neb[i].fringe.erase(neb[i].fringe.begin()+j);
+                nebOf(p,neb[i]);
+                //erase interior part and boundary part of fringe
+                for(int k=0;k<neb[i].fringe.size();k++){
+                    for(int y=0;y<neb[i].boundary.size();y++){
+                        if(neb[i].fringe[k].x==neb[i].boundary[y].x && neb[i].fringe[k].y==neb[i].boundary[y].y){
+                            neb[i].fringe.erase(neb[i].fringe.begin()+k);
+                        }
+                    }
+                    for(int y=0;y<neb[i].interior.size();y++){
+                        if(neb[i].fringe[k].x==neb[i].interior[y].x && neb[i].fringe[k].y==neb[i].interior[y].y){
+                            neb[i].fringe.erase(neb[i].fringe.begin()+k);
+                        }
+                    }
+                }
                 return;
             }
         }
     }
 
     //if not in any fringe; then add a new neb
+    //cout<<"adding a new neb! num: "<<neb.size()+1<<endl;
     Neb newNeb;
     nebOf(p,newNeb);
+    //erase interior part and boundary part of fringe
+    for(int i=0;i<newNeb.fringe.size();i++){
+        for(int j=0;j<newNeb.boundary.size();j++){
+            if(newNeb.fringe[i].x==newNeb.boundary[j].x && newNeb.fringe[i].y==newNeb.boundary[j].y){
+                newNeb.fringe.erase(newNeb.fringe.begin()+i);
+            }
+        }
+        for(int j=0;j<newNeb.interior.size();j++){
+            if(newNeb.fringe[i].x==newNeb.interior[j].x && newNeb.fringe[i].y==newNeb.interior[j].y){
+                newNeb.fringe.erase(newNeb.fringe.begin()+i);
+            }
+        }
+    }
     neb.push_back(newNeb);
     return;
 }
@@ -140,7 +169,9 @@ void Board::pick(int x, int y) {
 void Board::nebOf(Point p, Neb &f) {
     if (bombs[p.x][p.y] != 0) return;//is boom
 
-    if (bombsNerby(p) == 0) {
+    //if this is a interior cell
+    if (bombsNearby(p) == 0) {
+        f.interior.push_back(p);
         flags[p.x][p.y] =2;//interior cells have been checked
         board[p.x][p.y] = 0;
         for (int i = -1; i < 2; i++) {
@@ -152,11 +183,11 @@ void Board::nebOf(Point p, Neb &f) {
                 nebOf(np,f);//recursively search its neighborhood
             }
         }
-    }
+    }// if is a boundary cell
     else {
         flags[p.x][p.y] =2;//boundary cells have been checked
         f.boundary.push_back(p);
-        board[p.x][p.y] = bombsNerby(p);
+        board[p.x][p.y] = bombsNearby(p);
         //add adjacent unknown cells to fringe
         for (int i = -1; i < 2; i++) {
             for (int j = -1; j < 2; j++) {
@@ -173,7 +204,7 @@ void Board::nebOf(Point p, Neb &f) {
                         break;
                     }
                 }
-                if(!isAlreadyFringe){
+                if(!isAlreadyFringe &&  board[np.x][np.y]==-1){//not already in fringe and in unknown
                     f.fringe.push_back(np);
                 }
             }
@@ -181,7 +212,7 @@ void Board::nebOf(Point p, Neb &f) {
     }
 }
 
-int Board::bombsNerby(Point &p) {
+int Board::bombsNearby(Point &p) {
     int sum= 0;
     for (int i = -1; i < 2; i++) {
         for (int j = -1; j < 2; j++) {
@@ -196,7 +227,7 @@ int Board::bombsNerby(Point &p) {
 
 void Board::initialBombs(int x, int y) {//called only once, make sure the first pick is not a mine
     init = 1;
-    srand(time(NULL));
+    srand(clock());
     int T = N*M;
     int count = 0;
     while(count<K){
