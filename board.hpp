@@ -53,7 +53,8 @@ public:
 	int winOrLoss();//1=win -1=loss 0=in game
 	NebSet getNeb();//get the neighbour sets
 	Matrix getBoard();//get the board
-	Matrix flags;//default is 0, -1 for mine, 1 for unpicked safe, 2 for picked safe
+	//DoubleMatrix flags;//default is 0, -1 for mine, 1 for unpicked safe, 2 for picked safe
+    Matrix flags;
 	Matrix board;//-1 for unknown; non-neg for safe
 	int minesFound;
 	bool init;

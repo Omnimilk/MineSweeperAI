@@ -9,6 +9,7 @@ Board::Board() {
     minesFound=0;
 	board = Matrix(N, vector<int>(M));
 	bombs = Matrix(N, vector<int>(M));
+   // flags = DoubleMatrix(N, vector<double>(M));
     flags = Matrix(N, vector<int>(M));
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < M; j++) {
@@ -28,6 +29,7 @@ Board::Board(int a,int b,int c) {
     minesFound = 0;
     board = Matrix(N, vector<int>(M));
     bombs = Matrix(N, vector<int>(M));
+    //flags = DoubleMatrix(N, vector<double>(M));
     flags = Matrix(N, vector<int>(M));
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < M; j++) {
