@@ -1,15 +1,15 @@
-#include"board.hpp"
+#include "Board.hpp"
 
 Board::Board() {
-	N = 8;
-	M = 8;
+	N = 9;
+	M = 9;
 	K = 10;
 	init = 0;
 	booom = 0;
     minesFound=0;
 	board = Matrix(N, vector<int>(M));
 	bombs = Matrix(N, vector<int>(M));
-   // flags = DoubleMatrix(N, vector<double>(M));
+    //flags = DoubleMatrix(N, vector<double>(M));
     flags = Matrix(N, vector<int>(M));
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < M; j++) {

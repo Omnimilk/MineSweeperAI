@@ -27,12 +27,6 @@ struct Neb {
 
 typedef vector<Neb> NebSet;
 
-//bool isAdjacent(Point p1, Point p2) {
-//	if((p1.x - p2.x)==1 ||(p1.x - p2.x)==-1 ||(p1.y - p2.y)==1||(p1.y - p2.y)==-1){
-//		return 1;
-//	}
-//	return 0;
-//}
 
 class Board {
 private:
